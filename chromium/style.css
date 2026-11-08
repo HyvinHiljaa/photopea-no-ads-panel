@@ -1,0 +1,16 @@
+/**
+ * Photopea No Ads Panel — Chrome/Brave fallback style.
+ *
+ * The main fix is in inject.js. This CSS only hides the ad panel if the
+ * patch ever fails to match, so the panel cannot take up visual space.
+ */
+
+.flexrow.app > div:nth-child(2) {
+  display: none !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+}

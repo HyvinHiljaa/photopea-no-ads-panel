@@ -1,2 +1,7 @@
 # Local debug notes (not part of the published extension)
 DEBUG-NOTES.md
+
+# Build artifacts
+*.zip
+dist/
+web-ext-artifacts/
