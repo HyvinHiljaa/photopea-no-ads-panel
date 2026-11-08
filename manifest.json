@@ -1,0 +1,32 @@
+{
+  "manifest_version": 2,
+  "name": "Photopea No Ads Panel",
+  "version": "1.0.0",
+  "description": "Removes Photopea's right-side ad panel and the 320px reserved space.",
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "*://photopea.com/*",
+    "*://*.photopea.com/*"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://photopea.com/*",
+        "*://*.photopea.com/*"
+      ],
+      "css": ["style.css"],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "photopea-noads@local"
+    }
+  }
+}
