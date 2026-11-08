@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Photopea No Ads Panel",
   "version": "1.0.0",
-  "description": "Removes Photopea's right-side ad panel and the 320px reserved space.",
+  "description": "Removes Photopea's right-side ad panel.",
   "permissions": [
     "webRequest",
     "webRequestBlocking",

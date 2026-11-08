@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Photopea No Ads Panel",
   "version": "1.0.0",
-  "description": "Unofficial extension that removes Photopea's right-side ad panel and the 320px reserved space.",
+  "description": "Unofficial extension that removes Photopea's right-side ad panel.",
   "permissions": [],
   "host_permissions": [
     "*://photopea.com/*",
