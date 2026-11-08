@@ -40,6 +40,34 @@ the patch ever fails to match.
 
 ---
 
+## Why not just use an adblocker?
+
+An adblocker can stop the ad request, but it does not stop Photopea from
+*reserving space* for the ad panel.
+
+The panel is not a separate element injected by an ad network. It is part of
+Photopea's own layout: the app script decides at startup whether to create an
+ad host container and how much width to give it. If you block the ad iframe
+with a filter, the request never fires, but the container still exists and
+still takes its column of pixels — you end up with an empty vertical strip
+instead of an ad, and the canvas stays narrow.
+
+Cosmetic filters (`photopea.com##.something`) can hide that container, but
+they depend on Photopea's current DOM structure and class names, which change
+without notice, and hiding an element with CSS does not always reclaim the
+layout space it was given.
+
+This extension takes the other route: it flips the flag Photopea itself uses
+to decide whether the ad branch should run. The panel is never created, no
+width is reserved for it, and the editor simply gets the full window —
+no guessing at selectors, and nothing to keep re-tuning when Photopea
+updates its markup.
+
+Adblockers are still useful for blocking the rest of the web's ads; this
+extension just fixes the one thing a request blocker cannot fix here.
+
+---
+
 ## Firefox installation
 
 Firefox supports `webRequest.filterResponseData`, which lets the extension
