@@ -1,6 +1,6 @@
 # Photopea No Ads Panel
 
-![Photopea No Ads Panel](store/marquee-1400x560.png)
+![Photopea No Ads Panel](assets/marquee-1400x560.png)
 
 An extension that removes Photopea's right-side advertisement panel.
 
@@ -133,16 +133,16 @@ zip -r ../photopea-noads-chromium.zip manifest.json inject.js style.css icons
 
 ## Store listing assets
 
-The `store/` folder holds the artwork to use on the browser store listings
-and anywhere the add-on is presented. All of it is derived from
-`photopea-no-add-panel.png`.
+The `assets/` folder holds the source artwork and the images to use on the
+browser store listings and anywhere the add-on is presented. Everything in
+it is derived from `assets/photopea-no-add-panel.png`.
 
 | File | Size | Where it goes |
 |---|---|---|
-| `store/icon-128.png` | 128×128 | Chrome Web Store listing icon, AMO add-on icon |
-| `store/icon-512.png` | 512×512 | High-res icon for press kits / listings |
-| `store/promo-440x280.png` | 440×280 | Chrome Web Store small promo tile |
-| `store/marquee-1400x560.png` | 1400×560 | Chrome Web Store marquee / README banner |
+| `assets/icon-128.png` | 128×128 | Chrome Web Store listing icon, AMO add-on icon |
+| `assets/icon-512.png` | 512×512 | High-res icon for press kits / listings |
+| `assets/promo-440x280.png` | 440×280 | Chrome Web Store small promo tile |
+| `assets/marquee-1400x560.png` | 1400×560 | Chrome Web Store marquee / README banner |
 
 To regenerate every icon and store image from the source PNG:
 
@@ -152,7 +152,7 @@ from PIL import Image, ImageDraw
 import numpy as np
 
 TEAL = (9, 159, 146)
-src = Image.open('photopea-no-add-panel.png').convert('RGB')
+src = Image.open('assets/photopea-no-add-panel.png').convert('RGB')
 a = np.asarray(src).astype(int)
 a[a.sum(axis=2) < 90] = TEAL          # flatten the dark corners
 flat = Image.fromarray(a.astype('uint8'), 'RGB')
@@ -167,18 +167,18 @@ def rounded(im, size, radius_ratio=0.22):
     return out
 
 for s in (16, 32, 48, 128):
-    rounded(flat, s).save(f'chromium/icons/icon-{s}.png')
+    rounded(flat, s).save(f'chromium/icons/icon-{s}.png', optimize=True)
 for s in (48, 96, 128):
-    rounded(flat, s).save(f'firefox/icons/icon-{s}.png')
-rounded(flat, 128).save('store/icon-128.png')
-rounded(flat, 512).save('store/icon-512.png')
+    rounded(flat, s).save(f'firefox/icons/icon-{s}.png', optimize=True)
+rounded(flat, 128).save('assets/icon-128.png', optimize=True)
+rounded(flat, 512).save('assets/icon-512.png', optimize=True)
 
 for w, h, logo, name in ((440, 280, 250, 'promo-440x280'),
-                       (1400, 560, 520, 'marquee-1400x560')):
+                         (1400, 560, 520, 'marquee-1400x560')):
     canvas = Image.new('RGB', (w, h), TEAL)
     mark = rounded(flat, logo)
     canvas.paste(mark, ((w - logo) // 2, (h - logo) // 2), mark)
-    canvas.save(f'store/{name}.png')
+    canvas.save(f'assets/{name}.png', optimize=True)
 PY
 ```
 
@@ -246,7 +246,12 @@ If you open the browser console, you should see logs like:
 
 ```text
 photopea-no-ads-panel/
-├── photopea-no-add-panel.png   # source artwork for all icons/store images
+├── assets/
+│   ├── photopea-no-add-panel.png   # source artwork for all icons/images
+│   ├── icon-128.png                # store icon
+│   ├── icon-512.png                # high-res icon
+│   ├── promo-440x280.png           # Chrome small promo tile
+│   └── marquee-1400x560.png        # Chrome marquee / README banner
 ├── firefox/
 │   ├── manifest.json      # Firefox MV2 manifest
 │   ├── background.js      # webRequest.filterResponseData patch
@@ -257,7 +262,6 @@ photopea-no-ads-panel/
 │   ├── inject.js          # MAIN-world script interception patch
 │   ├── icons/             # 16/32/48/128 icons
 │   └── style.css          # fallback
-├── store/                 # store listing icons and promo tiles
 ├── README.md
 └── .gitignore
 ```
