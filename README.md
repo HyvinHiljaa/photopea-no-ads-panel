@@ -46,6 +46,8 @@ the patch ever fails to match.
 
 ## Why not just use an adblocker?
 
+![An adblocker removes the ad, this extension removes the reserved space](assets/why_not_adblocker.png)
+
 An adblocker can stop the ad request, but it does not stop Photopea from
 *reserving space* for the ad panel.
 
@@ -250,6 +252,7 @@ If you open the browser console, you should see logs like:
 photopea-no-ads-panel/
 ├── assets/
 │   ├── how_it_works.png               # diagram used in "How it works"
+│   ├── why_not_adblocker.png          # diagram used in "Why not just use an adblocker?"
 │   └── logo/
 │       ├── photopea-no-add-panel.png   # source artwork
 │       ├── icon-128.png                # store icon
