@@ -1,5 +1,7 @@
 # Photopea No Ads Panel
 
+![Photopea No Ads Panel](store/marquee-1400x560.png)
+
 An extension that removes Photopea's right-side advertisement panel.
 
 This repository contains two builds:
@@ -124,7 +126,60 @@ Build the zip from the **contents** of `chromium/` (not the folder itself):
 
 ```bash
 cd chromium
-zip -r ../photopea-noads-chromium.zip manifest.json inject.js style.css
+zip -r ../photopea-noads-chromium.zip manifest.json inject.js style.css icons
+```
+
+---
+
+## Store listing assets
+
+The `store/` folder holds the artwork to use on the browser store listings
+and anywhere the add-on is presented. All of it is derived from
+`photopea-no-add-panel.png`.
+
+| File | Size | Where it goes |
+|---|---|---|
+| `store/icon-128.png` | 128×128 | Chrome Web Store listing icon, AMO add-on icon |
+| `store/icon-512.png` | 512×512 | High-res icon for press kits / listings |
+| `store/promo-440x280.png` | 440×280 | Chrome Web Store small promo tile |
+| `store/marquee-1400x560.png` | 1400×560 | Chrome Web Store marquee / README banner |
+
+To regenerate every icon and store image from the source PNG:
+
+```bash
+python3 - <<'PY'
+from PIL import Image, ImageDraw
+import numpy as np
+
+TEAL = (9, 159, 146)
+src = Image.open('photopea-no-add-panel.png').convert('RGB')
+a = np.asarray(src).astype(int)
+a[a.sum(axis=2) < 90] = TEAL          # flatten the dark corners
+flat = Image.fromarray(a.astype('uint8'), 'RGB')
+
+def rounded(im, size, radius_ratio=0.22):
+    out = im.resize((size, size), Image.LANCZOS).convert('RGBA')
+    mask = Image.new('L', (size * 4, size * 4), 0)
+    ImageDraw.Draw(mask).rounded_rectangle(
+        (0, 0, size * 4 - 1, size * 4 - 1),
+        radius=int(size * 4 * radius_ratio), fill=255)
+    out.putalpha(mask.resize((size, size), Image.LANCZOS))
+    return out
+
+for s in (16, 32, 48, 128):
+    rounded(flat, s).save(f'chromium/icons/icon-{s}.png')
+for s in (48, 96, 128):
+    rounded(flat, s).save(f'firefox/icons/icon-{s}.png')
+rounded(flat, 128).save('store/icon-128.png')
+rounded(flat, 512).save('store/icon-512.png')
+
+for w, h, logo, name in ((440, 280, 250, 'promo-440x280'),
+                       (1400, 560, 520, 'marquee-1400x560')):
+    canvas = Image.new('RGB', (w, h), TEAL)
+    mark = rounded(flat, logo)
+    canvas.paste(mark, ((w - logo) // 2, (h - logo) // 2), mark)
+    canvas.save(f'store/{name}.png')
+PY
 ```
 
 ---
@@ -190,15 +245,19 @@ If you open the browser console, you should see logs like:
 ## Repository layout
 
 ```text
-photopea-noads/
+photopea-no-ads-panel/
+├── photopea-no-add-panel.png   # source artwork for all icons/store images
 ├── firefox/
 │   ├── manifest.json      # Firefox MV2 manifest
 │   ├── background.js      # webRequest.filterResponseData patch
+│   ├── icons/             # 48/96/128 icons
 │   └── style.css          # fallback
 ├── chromium/
 │   ├── manifest.json      # Chromium MV3 manifest
 │   ├── inject.js          # MAIN-world script interception patch
+│   ├── icons/             # 16/32/48/128 icons
 │   └── style.css          # fallback
+├── store/                 # store listing icons and promo tiles
 ├── README.md
 └── .gitignore
 ```

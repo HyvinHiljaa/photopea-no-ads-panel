@@ -3,6 +3,19 @@
   "name": "Photopea No Ads Panel",
   "version": "1.0.0",
   "description": "Removes Photopea's right-side ad panel.",
+  "icons": {
+    "48": "icons/icon-48.png",
+    "96": "icons/icon-96.png",
+    "128": "icons/icon-128.png"
+  },
+  "browser_action": {
+    "default_title": "Photopea No Ads Panel",
+    "default_icon": {
+      "48": "icons/icon-48.png",
+      "96": "icons/icon-96.png",
+      "128": "icons/icon-128.png"
+    }
+  },
   "permissions": [
     "webRequest",
     "webRequestBlocking",
