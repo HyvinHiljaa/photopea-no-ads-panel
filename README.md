@@ -1,9 +1,8 @@
 # Photopea No Ads Panel
 
-An extension that removes Photopea's right-side ad panel along with the
-320px of width reserved for it.
+An extension that removes Photopea's right-side advertisement panel.
 
-There are two builds in this repository:
+This repository contains two builds:
 
 | Folder | Browser | Manifest |
 |---|---|---|
@@ -11,71 +10,106 @@ There are two builds in this repository:
 | `chromium/` | Chrome / Brave / Edge / Chromium | MV3 |
 
 Both builds do the same thing: they force Photopea's internal ad flag to
-`true`, so the ad branch never runs.
+`true`, so the advertisement branch never runs.
 
-## How the patch works
+---
 
-Photopea's app script (`code/pp/pp*.js`) contains this line:
+## How it works
+
+Photopea's app script (`code/pp/pp*.js`) contains a layout function
+(`cT.prototype.Sr`) that decides whether to show the right-side ad panel.
+
+The extension rewrites one flag inside that function:
 
 ```js
+// before
 var K=eb.U$,D=!this.rX||this.uF()||!this.S.zB||hN.Dj()||...
-```
 
-The extension rewrites it to:
-
-```js
+// after
 var K=eb.U$,D=!0;
 ```
 
-As a result:
+When `D` is `true`, Photopea:
 
-- the right-side ad panel is never created,
-- 320px is no longer cut from the UI width,
-- ad scripts/iframes are not loaded.
+- does not create the ad panel,
+- does not reserve extra layout space for it,
+- does not load ad scripts/iframes.
 
 Each build also ships a `style.css` fallback that hides the panel in case
 the patch ever fails to match.
 
-## Firefox (MV2, `firefox/`)
+---
 
-Uses `webRequest.filterResponseData` to patch the response in flight.
-This API is Firefox-only.
+## Firefox installation
 
-### Load temporarily
+Firefox supports `webRequest.filterResponseData`, which lets the extension
+patch the script response before the browser runs it.
+
+### Temporary install
 
 1. Open `about:debugging#/runtime/this-firefox`.
 2. Click **Load Temporary Add-on…**.
 3. Select `firefox/manifest.json`.
 4. Reload `photopea.com` with **Ctrl+Shift+R**.
 
-### Build / publish
+### Permanent install
+
+Regular Firefox does not allow permanently installing unsigned extensions.
+You can either:
+
+- submit the add-on to [addons.mozilla.org](https://addons.mozilla.org/) for signing, or
+- use Firefox Developer Edition / Nightly and set
+  `about:config` → `xpinstall.signatures.required = false`.
+
+To build the package:
 
 ```bash
 cd firefox
-npm install -g web-ext
 web-ext build
 ```
 
-Submit the resulting zip on `addons.mozilla.org` for signing.
+---
 
-## Chrome / Brave (MV3, `chromium/`)
+## Chrome / Brave / Edge installation
 
-Chrome and Brave do not have `webRequest.filterResponseData`. The MV3 build
-instead runs `chromium/inject.js` in the page's **MAIN world** at
-`document_start`. It intercepts the `pp*.js` `<script>` element, fetches the
-source, patches it, and inserts the patched version as an inline script.
+Chrome and other Chromium browsers do **not** have
+`webRequest.filterResponseData`. The `chromium/` build instead runs a script
+in the page's MAIN world that intercepts Photopea's `pp*.js` script element,
+patches the source, and inserts the patched version.
 
-Photopea ships no CSP, so inline scripts are allowed.
+Photopea ships no Content-Security-Policy, so inline scripts are allowed.
 
-### Load temporarily in Chrome / Brave
+### Temporary install
 
-1. Open `brave://extensions` (or `chrome://extensions`).
+1. Open `brave://extensions` (or `chrome://extensions`, `edge://extensions`).
 2. Enable **Developer mode**.
 3. Click **Load unpacked**.
 4. Select the `chromium/` folder.
 5. Reload `photopea.com`.
 
-You should see these logs in the page console:
+### Permanent install
+
+Submit the packaged zip to the
+[Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole/).
+
+Build the zip from the **contents** of `chromium/` (not the folder itself):
+
+```bash
+cd chromium
+zip -r ../photopea-noads-chromium.zip manifest.json inject.js style.css
+```
+
+---
+
+## Usage
+
+There is nothing to configure. Install the extension, then open
+<https://www.photopea.com> and start the editor.
+
+The right-side ad panel should be gone and the editor should use the full
+width.
+
+If you open the browser console, you should see logs like:
 
 ```text
 [Photopea No-Ads] Ad branch disabled
@@ -83,34 +117,60 @@ You should see these logs in the page console:
 [Photopea No-Ads] Patched: code/pp/pp1794043082.js
 ```
 
-### Publish to the Chrome Web Store
+---
 
-Prebuilt zip: `dist/photopea-noads-chromium.zip`.
+## Terms and disclaimer
 
-To build it yourself, zip the **contents** of `chromium/` (not the folder):
+- This is an **unofficial** extension. It is not affiliated with, endorsed
+  by, or sponsored by Photopea.
+- "Photopea" is a trademark of its respective owner. This project only uses
+  the name to describe compatibility.
+- Photopea is a free, ad-supported service. Removing ads may be against
+  Photopea's own terms of service. **Use it at your own risk.**
+- The extension does **not** collect, store, or transmit any data.
+- The extension does **not** unlock paid/Premium features; it only disables
+  the advertisement branch.
+- Photopea may change its code at any time. If the patch stops working, the
+  ad panel may reappear. In that case, update the patterns in:
+  - `firefox/background.js`
+  - `chromium/inject.js`
+- No warranty is provided. The software is provided "as is".
 
-```bash
-cd chromium
-zip -r ../dist/photopea-noads-chromium.zip manifest.json inject.js style.css
+---
+
+## Troubleshooting
+
+### The ad panel is still visible
+
+1. Hard reload Photopea: **Ctrl+Shift+R**.
+2. Check the browser console for `[Photopea No-Ads]` logs.
+3. If you see `Ad branch pattern not found`, Photopea changed its code.
+   Update the patterns in `firefox/background.js` and `chromium/inject.js`.
+
+### Firefox patch does not apply
+
+- Make sure you loaded `firefox/manifest.json` (not the Chromium one).
+- Try disabling cache in DevTools and reloading.
+
+### Chrome/Brave patch does not apply
+
+- Make sure you loaded the `chromium/` folder via **Load unpacked**.
+- Rebuild/reload the extension after changing files.
+
+---
+
+## Repository layout
+
+```text
+photopea-noads/
+├── firefox/
+│   ├── manifest.json      # Firefox MV2 manifest
+│   ├── background.js      # webRequest.filterResponseData patch
+│   └── style.css          # fallback
+├── chromium/
+│   ├── manifest.json      # Chromium MV3 manifest
+│   ├── inject.js          # MAIN-world script interception patch
+│   └── style.css          # fallback
+├── README.md
+└── .gitignore
 ```
-
-Then:
-
-1. Go to the [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole/).
-2. Pay the one-time $5 developer fee (if you have not already).
-3. Upload the zip as a new item.
-4. Fill in the listing (name, description, screenshots, privacy).
-5. Privacy: declare that the extension collects no data.
-6. Submit for review.
-
-Chrome Web Store review is usually faster than AMO, but they may ask about
-the `world: "MAIN"` content script. Explain that it only rewrites Photopea's
-own script before the page runs it and does not collect data.
-
-## Notes
-
-If Photopea updates `pp*.js` and changes the structure, you may see
-`Ad branch pattern not found` in the console. Update the patterns in
-`firefox/background.js` and `chromium/inject.js` to match the new version.
-The patterns use capture groups, so simple variable renames are handled
-automatically.
