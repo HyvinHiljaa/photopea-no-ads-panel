@@ -18,6 +18,8 @@ Both builds do the same thing: they force Photopea's internal ad flag to
 
 ## How it works
 
+![How it works: the ad branch is disabled before the panel is created](assets/how_it_works.png)
+
 Photopea's app script (`code/pp/pp*.js`) contains a layout function
 (`cT.prototype.Sr`) that decides whether to show the right-side ad panel.
 
@@ -247,6 +249,7 @@ If you open the browser console, you should see logs like:
 ```text
 photopea-no-ads-panel/
 ├── assets/
+│   ├── how_it_works.png               # diagram used in "How it works"
 │   └── logo/
 │       ├── photopea-no-add-panel.png   # source artwork
 │       ├── icon-128.png                # store icon
