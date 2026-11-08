@@ -270,5 +270,17 @@ photopea-no-ads-panel/
 │   ├── icons/             # 16/32/48/128 icons
 │   └── style.css          # fallback
 ├── README.md
+├── LICENSE                # MIT
 └── .gitignore
 ```
+
+---
+
+## License
+
+The extension code in this repository is released under the
+[MIT License](LICENSE).
+
+Photopea itself is **not** covered by this license and is not distributed
+here. "Photopea" is a trademark of its respective owner; the name is used
+only to describe compatibility.
