@@ -20,7 +20,7 @@ Both builds do the same thing: they force Photopea's internal ad flag to
 
 Yes, you can switch to the full version for something like a dollar. But that
 was never the point for me. What really killed it was the business model
-itself. Buuilt on something this simple, and this easy to prevent.
+itself. Built on something this simple, and this easy to prevent.
 
 Browsers are browsers: I can change anything I can see on my screen. Trying
 to prevent that struck me as funny, so I made this extension.
