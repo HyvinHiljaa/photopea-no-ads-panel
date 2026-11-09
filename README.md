@@ -16,7 +16,7 @@ Both builds do the same thing: they force Photopea's internal ad flag to
 
 ---
 
-## Why I Built This (with AI)
+## Why I Built This
 
 Yes, you can switch to the full version for something like a dollar. But that
 was never the point for me. What really killed it was the business model
