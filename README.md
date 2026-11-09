@@ -16,6 +16,17 @@ Both builds do the same thing: they force Photopea's internal ad flag to
 
 ---
 
+## Why I (With AI) Made This?
+
+Yes, you can switch to the full version for something like a dollar. But that
+was never the point for me. What really killed it was the business model
+itself — built on something this simple, and this easy to prevent.
+
+Browsers are browsers: I can change anything I can see on my screen. Trying
+to prevent that struck me as funny, so I made this extension.
+
+---
+
 ## How it works
 
 ![How it works: the ad branch is disabled before the panel is created](assets/how_it_works.png)
