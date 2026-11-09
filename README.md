@@ -27,7 +27,7 @@ to prevent that struck me as funny, so I made this extension.
 
 I used AI to write the source code, btw. If you find that a deal-breaker, so
 be it. If there is a way to make this extension without debugging minified
-JS, I'm up for that method.
+JS manually, I'm up for that method.
 
 ---
 
