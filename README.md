@@ -25,6 +25,10 @@ itself. Built on something this simple, and this easy to prevent.
 Browsers are browsers: I can change anything I can see on my screen. Trying
 to prevent that struck me as funny, so I made this extension.
 
+I used AI to write the source code, btw. If you find that a deal-breaker, so
+be it. If there is a way to make this extension without debugging minified
+JS, I'm up for that method.
+
 ---
 
 ## How it works
